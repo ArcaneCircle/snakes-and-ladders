@@ -558,6 +558,8 @@ function endGame() {
     const secs = total_secs % 60
     const mins = (total_secs - secs) / 60
 
+    window.highscores.setScore(total_secs);
+
     const seconds = secs == 1 ? ' second' : ' seconds'
     const minutes = mins == 1 ? ' minute' : ' minutes'
 
@@ -668,4 +670,20 @@ device()
 
 addEventListener('resize', resize)
 resize()
-startGame()
+window.highscores.init({
+    getAnnouncement: (name, score) => {
+        const secs = score % 60
+        const mins = (score - secs) / 60
+
+        const seconds = secs == 1 ? ' second' : ' seconds'
+        const minutes = mins == 1 ? ' minute' : ' minutes'
+
+        return `${name} won the game in ${mins}${minutes} and ${secs}${seconds}!`;
+    },
+    compareScores: (score1, score2) => {
+        if (score1 === score2) return 0;
+        if (score1 === 0) return -1;
+        if (score2 === 0) return 1;
+        return score2 - score1;
+    },
+}).then(startGame);
